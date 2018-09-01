@@ -64,7 +64,7 @@ class Utility:
             embed.add_field(name='muterole ROLE_NAME', value='Set mute role', inline=False)
             embed.add_field(name='mutetime 1M/1H', value='Set the mute time for when users reach warning mute', inline=False)
             embed.add_field(name='resetsetting SETTING_NAME', value='Resets the setting to default', inline=False)
-            embed.add_field(name='botinfo', value='Shows the bot information', inline=False),
+            embed.add_field(name='botinfo', value='Shows the bot information', inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'Admin' or user_response.clean_content == 'admin':

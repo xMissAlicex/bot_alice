@@ -11,7 +11,7 @@ import sys
 TOKEN = os.getenv('TOKEN')
 client = commands.Bot(command_prefix = '>')
 client.remove_command('help')
-status = ['Commands: >help', 'Watching you']
+status = ['Commands: >help', 'Watching Senpai', 'Yandere Simulator']
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
 extensions = ['fun', 'admin', 'utility', 'level_system']
@@ -102,6 +102,12 @@ async def on_member_unban(server, member):
 async def on_message(message):
     server = message.channel.server
     author = message.author
+    channel = message.channel
+    help_check = ["Core", "Admin", "Utility", "Filter", "Fun", "Music", "Swarm", "Level", "Creator", "core", "admin", "utility", "filter", "fun", "music", "swarm", "level", "creator"]
+    for check in help_check:
+        if message.content.startswith(">help " + check):
+            await client.send_message(channel, "Do not use >help {}, you just write the module | Example: >help | {}".format(check, check))
+            return
 
     # Chat Filter Function
     with open('chatfilter.json', 'r') as f:
@@ -352,7 +358,7 @@ async def mylevel(ctx):
 @client.command(pass_context=True)
 async def whitelist(ctx):
     author = ctx.message.author
-    if author.id == 164068466129633280 or author.id == 142002197998206976:
+    if author.id == "4854571924562903255":
         with open('whitelist.json', 'r') as f:
             servers = json.load(f)
         if not server.id in servers:
@@ -370,7 +376,7 @@ async def whitelist(ctx):
 async def togglelevel(ctx):
     author = ctx.message.author
     server = author.server
-    if author == server.owner or author.id == 164068466129633280:
+    if author == server.owner or author.id == "164068466129633280":
         toggle = await check_settings(server, "Level_System")
         if toggle == True:
             await update_settings(server, "Level_System", False)
@@ -696,40 +702,54 @@ async def mod(ctx, user: discord.Member):
                 colour = discord.Colour.green()
                 )
                 await client.say(embed=embed)
+    else:
+        embed = discord.Embed(
+        title = '',
+        description = 'You do not have permission to use this command',
+        colour = discord.Colour.red()
+        )
+        await client.say(embed=embed)
 
 @client.command(pass_context=True)
 async def admin(ctx, user: discord.Member):
     author = ctx.message.author
     server = ctx.message.server
     adminrole = await check_settings(server, "Admin_Role")
-
-    if discord.utils.get(user.roles, name=adminrole):
-            role = discord.utils.get(server.roles, name=adminrole)
-            await client.remove_roles(user, role)
-            embed = discord.Embed(
-            title = 'Administrator',
-            description = 'Administrator role was removed from {}'.format(user.mention),
-            colour = discord.Colour.green()
-            )
-            await client.say(embed=embed)
-            return
-    else:
-        if adminrole == "none":
-            embed = discord.Embed(
-            title = 'Administrator',
-            description = 'The Administrator role has not been set, please use >adminrole ROLE',
-            colour = discord.Colour.red()
-            )
-            await client.say(embed=embed)
+    if author.server_permissions.administrator:
+        if discord.utils.get(user.roles, name=adminrole):
+                role = discord.utils.get(server.roles, name=adminrole)
+                await client.remove_roles(user, role)
+                embed = discord.Embed(
+                title = 'Administrator',
+                description = 'Administrator role was removed from {}'.format(user.mention),
+                colour = discord.Colour.green()
+                )
+                await client.say(embed=embed)
+                return
         else:
-            role = discord.utils.get(server.roles, name=adminrole)
-            await client.add_roles(user, role)
-            embed = discord.Embed(
-            title = 'Administrator',
-            description = '{} has been given the Administrator role.'.format(user.mention),
-            colour = discord.Colour.green()
-            )
-            await client.say(embed=embed)
+            if adminrole == "none":
+                embed = discord.Embed(
+                title = 'Administrator',
+                description = 'The Administrator role has not been set, please use >adminrole ROLE',
+                colour = discord.Colour.red()
+                )
+                await client.say(embed=embed)
+            else:
+                role = discord.utils.get(server.roles, name=adminrole)
+                await client.add_roles(user, role)
+                embed = discord.Embed(
+                title = 'Administrator',
+                description = '{} has been given the Administrator role.'.format(user.mention),
+                colour = discord.Colour.green()
+                )
+                await client.say(embed=embed)
+    else:
+        embed = discord.Embed(
+        title = '',
+        description = 'You do not have permission to use this command',
+        colour = discord.Colour.red()
+        )
+        await client.say(embed=embed)
 
 @client.command(pass_context=True)
 async def userid(ctx, user: discord.Member):
@@ -806,7 +826,7 @@ async def mywarns(ctx):
 @client.command(pass_context=True)
 async def autoban(ctx, user: discord.Member):
     server = ctx.message.author.server
-    if ctx.message.author.id == "164068466129633280" or ctx.message.author.id == "142002197998206976":
+    if ctx.message.author.id == "164068466129633280":
         isbanned = False
         with open("autobans.json", "r") as f:
             if "banlist" in f:
@@ -844,7 +864,7 @@ async def autoban(ctx, user: discord.Member):
 @client.command(pass_context=True)
 async def unautoban(ctx, id):
     server = ctx.message.author.server
-    if ctx.message.author.id == "164068466129633280" or ctx.message.author.id == "142002197998206976":
+    if ctx.message.author.id == "164068466129633280":
         isbanned = False
         with open("autobans.json", "r") as f:
             autobans = json.load(f)
@@ -906,7 +926,7 @@ async def resetsetting(ctx, setting = None):
 
 @client.command(pass_context=True)
 async def load(ctx, extension):
-    if ctx.message.author.id == 164068466129633280 or ctx.message.author.id == 142002197998206976:
+    if ctx.message.author.id == "164068466129633280":
         try:
             client.load_extension(extension)
             embed = discord.Embed(
@@ -933,7 +953,7 @@ async def load(ctx, extension):
 
 @client.command(pass_context=True)
 async def unload(ctx, extension):
-    if ctx.message.author.id == 164068466129633280 or ctx.message.author.id == 142002197998206976:
+    if ctx.message.author.id == "164068466129633280":
         try:
             client.unload_extension(extension)
             print('Unloaded {}'.format(extension))
