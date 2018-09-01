@@ -7,7 +7,6 @@ from discord.ext.commands import Bot
 from discord.ext import commands
 from itertools import cycle
 import sys
-import checks
 
 TOKEN = os.getenv('TOKEN')
 client = commands.Bot(command_prefix = '>')
