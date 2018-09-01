@@ -68,6 +68,7 @@ async def check_settings(serverunit, setting):
 @client.event
 async def on_ready():
     print("Bot is online.")
+    print("Test")
 
 @client.event
 async def on_server_join(serverunit):
