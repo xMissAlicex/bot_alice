@@ -2,7 +2,6 @@ import discord
 import asyncio
 import time
 import os, sys
-import pymysql
 import json
 from discord.ext.commands import Bot
 from discord.ext import commands
@@ -11,62 +10,11 @@ class Admin:
     def __init__(self, client):
         self.client = client
 
-    def check_database(self, server, setting):
-        conn = pymysql.connect(host='sql7.freesqldatabase.com', user='sql7254700', password='LxcpDGBWp4', db='sql7254700')
-        c = conn.cursor()
-        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
-        c.execute(sql)
-        conn.commit()
-        data = c.fetchone()
-        conn.close()
-        for row in data:
-            if row == 1:
-                return True
-            elif row == 0:
-                return False
-            else:
-                return row
-
-
-
-    def update_database(self, server, setting, value):
-            conn = pymysql.connect(host='sql7.freesqldatabase.com', user='sql7254700', password='LxcpDGBWp4', db='sql7254700')
-            c = conn.cursor()
-            if setting == "Join_Role":
-                sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
-            elif setting == "DMWarn":
-                sql = "UPDATE `Server_Settings` SET DMWarn = %s where serverid = %s"
-            elif setting == "Verify_Role":
-                sql = "UPDATE `Server_Settings` SET Verify_Role = %s where serverid = %s"
-            elif setting == "Mod_Role":
-                sql = "UPDATE `Server_Settings` SET Mod_Role = %s where serverid = %s"
-            elif setting == "Admin_Role":
-                sql = "UPDATE `Server_Settings` SET Admin_Role = %s where serverid = %s"
-            elif setting == "Mute_Role":
-                sql = "UPDATE `Server_Settings` SET Mute_Role = %s where serverid = %s"
-            elif setting == "WarnMute":
-                sql = "UPDATE `Server_Settings` SET WarnMute = %s where serverid = %s"
-            elif setting == "JoinToggle":
-                sql = "UPDATE `Server_Settings` SET JoinToggle = %s where serverid = %s"
-            elif setting == "CanModAnnounce":
-                sql = "UPDATE `Server_Settings` SET CanModAnnounce = %s where serverid = %s"
-            elif setting == "Level_System":
-                sql = "UPDATE `Server_Settings` SET Level_System = %s where serverid = %s"
-            elif setting == "Chat_Filter":
-                sql = "UPDATE `Server_Settings` SET Chat_Filter = %s where serverid = %s"
-            elif setting == "Ignore_Hierarchy":
-                sql = "UPDATE `Server_Settings` SET Chat_Filter = %s where serverid = %s"
-            else:
-                print("No such setting found")
-                return
-            t = (value, str(server.id))
-            c.execute(sql, t)
-            conn.commit()
-            conn.close()
-            print("Done")
-
     def is_allowed_by_hierarchy(self, server, mod, user):
-        toggle = self.check_database(server, "Ignore_Hierarchy")
+        with open('srv_settings.json', 'r') as f:
+            servers = json.load(f)
+            setting = servers[server.id]["Ignore_Hierarchy"]
+        toggle = setting
         special = mod == server.owner or mod.id == self.client.settings.owner
         if toggle == False:
             if mod.top_role.position > user.top_role.position:
@@ -77,14 +25,18 @@ class Admin:
             return True
 
     def is_mod_or_perms(self, server, mod):
-        t_modrole = self.check_database(server, "Mod_Role")
-        t_adminrole = self.check_database(server, "Admin_Role")
+        with open('srv_settings.json', 'r') as f:
+            servers = json.load(f)
+            t_modrole = servers[server.id]["Mod_Role"]
+            t_adminrole = servers[server.id]["Mod_Role"]
         if discord.utils.get(mod.roles, name=t_modrole) or mod.server_permissions.administrator or mod.id == '164068466129633280' or mod.id == '142002197998206976' or discord.utils.get(mod.roles, name=t_modrole):
             return True
         else:
             return False
     def is_admin_or_perms(self, server, mod):
-        t_adminrole = self.check_database(server, "Admin_Role")
+        with open('srv_settings.json', 'r') as f:
+            servers = json.load(f)
+            t_adminrole = servers[server.id]["Admin_Role"]
         if discord.utils.get(mod.roles, name=t_adminrole) or mod.server_permissions.administrator or mod.id == '164068466129633280' or mod.id == '142002197998206976':
             return True
         else:
@@ -159,7 +111,7 @@ class Admin:
                                fp.close()
                                with open('srv_settings.json', 'r') as f:
                                    servers = json.load(f)
-                                   warn_time = self.check_database(server, "WarnMute")
+                                   warn_time = servers[server.id]["WarnMute"]
                                    muterole_name = servers[server.id]["Mute_Role"]
                                    muterole = discord.utils.get(server.roles, name=muterole_name)
 
@@ -219,13 +171,6 @@ class Admin:
             colour = discord.Colour.red()
             )
             await self.client.say(embed=embed)
-
-    @commands.command(pass_context=True)
-    async def admintest(self, ctx):
-        server = ctx.message.channel.server
-        check = self.check_database(server, "Mod_Role")
-        print(check)
-
 
 
     @commands.command(pass_context=True)
@@ -297,7 +242,7 @@ class Admin:
                                fp.close()
                                with open('srv_settings.json', 'r') as f:
                                    servers = json.load(f)
-                                   warn_time = self.check_database(server, "WarnMute")
+                                   warn_time = servers[server.id]["WarnMute"]
                                    muterole_name = servers[server.id]["Mute_Role"]
                                    muterole = discord.utils.get(server.roles, name=muterole_name)
 
@@ -435,7 +380,9 @@ class Admin:
         author = ctx.message.author
         server = author.server
         if self.is_admin_or_perms(server, author):
-            verifyrole_name = self.check_database(server, "Verify_Role")
+            with open("srv_settings.json", 'r') as f:
+                servers = json.load(f)
+            verifyrole_name = servers[server.id]["Verify_Role"]
             verifyrole = discord.utils.get(server.roles, name=verifyrole_name)
             if role_name == None:
                 if verifyrole != None:
