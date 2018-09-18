@@ -9,7 +9,6 @@ from itertools import cycle
 import sys
 
 #TOKEN = os.getenv('TOKEN')
-TOKEN = 'NDg1NDU3MTkyNDU2MjkwMzI1.Dmw1vQ.DTP85DfFbY8ce4OkJww_Zchf3rY'
 client = commands.Bot(command_prefix = '>')
 client.remove_command('help')
 status = ['Commands: >help', 'Watching Senpai', 'Yandere Simulator']
