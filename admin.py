@@ -1098,6 +1098,49 @@ class Admin:
             )
             await self.client.say(embed=embed)
 
+    @commands.command(pass_context=True)
+    async def role(self, ctx, user: discord.Member, role):
+        author = ctx.message.author
+        server = ctx.message.channel.server
+        if self.is_admin_or_perms(server, author):
+            found_role = discord.utils.get(server.roles, name=role)
+            if found_role == None:
+                embed = discord.Embed(
+                    title = '',
+                    description = 'Role not found',
+                    colour = discord.Colour.red()
+                )
+                await self.client.say(embed=embed)
+            else:
+                has_role = False
+                user_roles = user.roles
+                for role in user_roles:
+                    if str(role) == str(found_role):
+                        has_role = True
+                if has_role == True:
+                    await self.client.remove_roles(user, found_role)
+                    embed = discord.Embed(
+                        title = '',
+                        description = 'The role **{}** has been removed from {}'.format(str(found_role), user.mention),
+                        colour = discord.Colour.green()
+                    )
+                    await self.client.say(embed=embed)
+                else:
+                    await self.client.add_roles(user, found_role)
+                    embed = discord.Embed(
+                        title = '',
+                        description = '{} has been given the role **{}**'.format(user.mention, str(found_role)),
+                        colour = discord.Colour.green()
+                    )
+                    await self.client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+            title = '',
+            description = 'You do not have permission to use this command.',
+            colour = discord.Colour.red()
+            )
+            await self.client.say(embed=embed)
+
 
     @commands.command(pass_context=True)
     async def muteid(self, ctx, userID, lenght = "0m"):
