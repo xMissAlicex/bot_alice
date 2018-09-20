@@ -717,9 +717,7 @@ class Admin:
         if message == None:
             await self.client.say("Please type a message")
             return
-        with open('srv_settings.json', 'r') as f:
-            servers = json.load(f)
-            ModAllowed = servers[server.id]["CanModAnnounce"]
+        ModAllowed = self.check_database(server, "CanModAnnounce")
         if ModAllowed == False:
             if self.is_mod_or_perms(server, author):
                 embed = discord.Embed(
