@@ -1069,7 +1069,13 @@ async def unload(ctx, extension):
     if ctx.message.author.id == "164068466129633280":
         try:
             client.unload_extension(extension)
-            print('Unloaded {}'.format(extension))
+            client.load_extension(extension)
+            embed = discord.Embed(
+            title = 'Module Unloaded',
+            description = 'The module {} has been successfully unloaded.'.format(extension),
+            colour = discord.Colour.green()
+            )
+            await client.say(embed=embed)
         except Exception as error:
             print('{} cannot be unloaded. [{}]'.format(extension, error))
 
@@ -1083,3 +1089,4 @@ if __name__ == '__main__':
 
     client.loop.create_task(change_status())
     client.run(TOKEN)
+
