@@ -22,7 +22,7 @@ class Utility:
             )
 
             embed.set_image(url=self_image)
-            embed.set_author(name='Your Avatar', icon_url='https://i.imgur.com/qT9B2iy.png')
+            embed.set_author(name='Your Avatar')
         else:
             try:
                 embed = discord.Embed(
@@ -30,7 +30,7 @@ class Utility:
                 )
 
                 embed.set_image(url=user.avatar_url)
-                embed.set_author(name="{}'s Avatar".format(user), icon_url='https://i.imgur.com/qT9B2iy.png')
+                embed.set_author(name="{}'s Avatar".format(user))
 
                 await self.client.say(embed=embed)
             except on_error:
@@ -54,6 +54,7 @@ class Utility:
                 colour = discord.Colour.blue()
             )
             embed.set_author(name='Core Module')
+            embed.add_field(name='settings', value='Displays server settings', inline=False)
             embed.add_field(name='dmwarn', value='Enable/Disable Direct Message On Warning', inline=False)
             embed.add_field(name='jointoggle', value='Enable/Disable auto role on join', inline=False)
             embed.add_field(name='joinrole ROLE_NAME', value='Set auto join role', inline=False)
@@ -73,6 +74,7 @@ class Utility:
                 colour = discord.Colour.blue()
             )
             embed.set_author(name='Admin Module')
+            embed.add_field(name='role @user ROLE_NAME', value='Roles the user with the given rank or removes it if he already has it', inline=False)
             embed.add_field(name='kick @user', value='Kicks the user', inline=False)
             embed.add_field(name='ban @user', value='Bans the user', inline=False)
             embed.add_field(name='banid USER_ID', value='Bans the user with ID', inline=False)
@@ -166,6 +168,7 @@ class Utility:
             embed.add_field(name='rolldice', value='Rolls a dice and will land on a number between 1 - 6', inline=False)
             embed.add_field(name='members', value='Shows member count', inline=False)
             embed.add_field(name='userid @user', value='Showhs the users UserID', inline=False)
+            embed.add_field(name='roleid ROLE_NAME', value='Displays the roles ID', inline=False)
             await self.client.say(embed=embed)
 
         else:
@@ -187,6 +190,26 @@ class Utility:
             embed = discord.Embed(
                 title = 'Coin Flip',
                 description = 'You flipped a coin and it landed on **Heads**',
+                colour = discord.Colour.green()
+            )
+            await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def roleid(self, ctx, role):
+        author = ctx.message.author
+        server = ctx.message.channel.server
+        found_role = discord.utils.get(server.roles, name=role)
+        if found_role == None:
+            embed = discord.Embed(
+                title = '',
+                description = 'Role not found',
+                colour = discord.Colour.red()
+            )
+            await self.client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                title = '',
+                description = 'The roleID for `{}` is **{}**'.format(str(found_role), found_role.id),
                 colour = discord.Colour.green()
             )
             await self.client.say(embed=embed)
@@ -261,23 +284,23 @@ class Utility:
             )
             await self.client.say(embed=embed)
 
-    @commands.command(pass_context=True)
-    async def leave(self, ctx, id):
-        author = ctx.message.author
-        if author.id == '142002197998206976' or author.id == '164068466129633280':
-            for srv in self.client.servers:
-                if srv.id == id:
-                    await self.client.leave_server(srv)
-                    embed = discord.Embed(
-                        description = 'I have successfully left the server `{}`'.format(srv),
-                        colour = discord.Colour.green()
-                    )
-        else:
-            embed = discord.Embed(
-                description = 'You do not have permission to use this command.',
-                colour = discord.Colour.red()
-            )
-            await self.client.say(embed=embed)
+    # @commands.command(pass_context=True)
+    # async def leave(self, ctx, id):
+    #     author = ctx.message.author
+    #     if author.id == '142002197998206976' or author.id == '164068466129633280':
+    #         for srv in self.client.servers:
+    #             if srv.id == id:
+    #                 await self.client.leave_server(srv)
+    #                 embed = discord.Embed(
+    #                     description = 'I have successfully left the server `{}`'.format(srv),
+    #                     colour = discord.Colour.green()
+    #                 )
+    #     else:
+    #         embed = discord.Embed(
+    #             description = 'You do not have permission to use this command.',
+    #             colour = discord.Colour.red()
+    #         )
+    #         await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
     async def invite(self, ctx):
@@ -308,3 +331,4 @@ class Utility:
 
 def setup(client):
     client.add_cog(Utility(client))
+
