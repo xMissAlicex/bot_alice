@@ -230,348 +230,348 @@ class Admin:
             )
             await self.client.say(embed=embed)
 
-    @commands.command(pass_context=True)
-    async def admintest(self, ctx):
-        server = ctx.message.channel.server
-        check = self.check_database(server, "Mod_Role")
-        print(check)
-
 
 
     @commands.command(pass_context=True)
     async def warnid(self, ctx, id, *, reason = "No Reason Given"):
-        author = ctx.message.author
-        server = author.server
         await self.client.say("Function currently down due to upgrading database system.")
         return
-        user = server.get_member(id)
-        if self.is_mod_or_perms(server, author):
-            path = "servers/" + str(server.id) + "/warnings/" + str(user.id) + "/"
-            if not os.path.exists(path):
-                os.makedirs(path)
-                warn_path = path + "warnings.json"
-                if not os.path.exists(warn_path):
-                    with open(warn_path, 'w+') as f:
-                        json_data = {}
-                        warnings = []
-                        warnings.append(reason)
-                        json_data[user.id] = {}
-                        json_data[user.id]["Warnings"] = warnings
-                        json.dump(json_data, f)
-                        embed = discord.Embed(
-                        title = '',
-                        description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
-                        colour = discord.Colour.green()
-                        )
-                        await self.client.say(embed=embed)
-
-            else:
-                warn_path = path + "warnings.json"
-                if not os.path.exists(warn_path):
-                    with open(warn_path, 'w+') as f:
-                        json_data = {}
-                        warnings = []
-                        warnings.append(reason)
-                        json_data[user.id] = {}
-                        json_data[user.id]["Warnings"] = warnings
-                        json.dump(json_data, f)
-                        embed = discord.Embed(
-                        title = '',
-                        description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
-                        colour = discord.Colour.green()
-                        )
-                        await self.client.say(embed=embed)
-                else:
-                    with open(warn_path, 'r') as f:
-                        warns_list = json.load(f)
-                        current_warnings = warns_list[user.id]["Warnings"]
-                        current_warnings.append(reason)
-                        warns_list[user.id]["Warnings"] = current_warnings
-
-
-                        with open(warn_path, 'w') as f:
-                            json.dump(warns_list, f)
-                        embed = discord.Embed(
-                        title = '',
-                        description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
-                        colour = discord.Colour.green()
-                        )
-                        await self.client.say(embed=embed)
-                        #------------------------------------------------------------------
-                        punish_path = "servers/" + str(server.id) + "/warn_punishments/"
-                        t_path = punish_path + str(len(current_warnings)) + ".txt"
-                        if os.path.exists(t_path):
-                            with open(t_path) as fp:
-                               line = fp.readline()
-                               while line:
-                                   check_punish = line.strip()
-                                   line = fp.readline()
-                               fp.close()
-                               with open('srv_settings.json', 'r') as f:
-                                   servers = json.load(f)
-                                   warn_time = self.check_database(server, "WarnMute")
-                                   muterole_name = servers[server.id]["Mute_Role"]
-                                   muterole = discord.utils.get(server.roles, name=muterole_name)
-
-
-                               if check_punish == "Mute":
-                                   if "m" in warn_time:
-                                       t_time = warn_time.replace("m", "")
-                                       time_type = "m"
-                                       if int(t_time) == 0:
-                                           time = 0
-                                       else:
-                                           time = int(t_time)*60
-                                   elif "h" in warn_time:
-                                       t_time = warn_time.replace("h", "")
-                                       time_type = "h"
-                                       if int(t_time) == 0:
-                                           time = 0
-                                       else:
-                                           time = int(t_time)*3600
-                                   user_roles = user.roles
-                                   path = "servers/" + str(server.id) + "/muted/"
-                                   if not os.path.exists(path):
-                                       os.makedirs(path)
-                                   mutepath = path + str(user.id) + ".txt"
-                                   f = open(mutepath, "w+")
-                                   for role in user_roles:
-                                       if str(role) != "@everyone":
-                                           usrole = str(role)
-                                           write = usrole + "\n"
-                                           f.write(write)
-                                   f.close()
-                                   print(user)
-                                   await self.client.replace_roles(user, muterole)
-                                   await asyncio.sleep(time)
-                                   path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
-                                   with open(path) as f:
-                                       line = fp.readline()
-                                       roles_to_give = []
-                                       while line:
-                                           role = discord.utils.get(server.roles, name=line.strip())
-                                           roles_to_give.append(role)
-                                           line = f.readline()
-                                       f.close()
-                                   await self.client.replace_roles(user, *roles_to_give)
-                                   os.remove(path)
-
-                               elif check_punish == "Kick":
-                                   await self.client.say("{} has been kicked for reaching the warning threshold.".format(user.mention))
-                                   await self.client.kick(user)
-                               elif check_punish == "Ban":
-                                   await self.client.say("{} has been banned for reaching the warning threshold.".format(user.mention))
-                                   await self.client.ban(user)
-        else:
-            embed = discord.Embed(
-            title = '',
-            description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
-            )
-            await self.client.say(embed=embed)
+        # author = ctx.message.author
+        # server = author.server
+        # user = server.get_member(id)
+        # if self.is_mod_or_perms(server, author):
+        #     path = "servers/" + str(server.id) + "/warnings/" + str(user.id) + "/"
+        #     if not os.path.exists(path):
+        #         os.makedirs(path)
+        #         warn_path = path + "warnings.json"
+        #         if not os.path.exists(warn_path):
+        #             with open(warn_path, 'w+') as f:
+        #                 json_data = {}
+        #                 warnings = []
+        #                 warnings.append(reason)
+        #                 json_data[user.id] = {}
+        #                 json_data[user.id]["Warnings"] = warnings
+        #                 json.dump(json_data, f)
+        #                 embed = discord.Embed(
+        #                 title = '',
+        #                 description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
+        #                 colour = discord.Colour.green()
+        #                 )
+        #                 await self.client.say(embed=embed)
+        #
+        #     else:
+        #         warn_path = path + "warnings.json"
+        #         if not os.path.exists(warn_path):
+        #             with open(warn_path, 'w+') as f:
+        #                 json_data = {}
+        #                 warnings = []
+        #                 warnings.append(reason)
+        #                 json_data[user.id] = {}
+        #                 json_data[user.id]["Warnings"] = warnings
+        #                 json.dump(json_data, f)
+        #                 embed = discord.Embed(
+        #                 title = '',
+        #                 description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
+        #                 colour = discord.Colour.green()
+        #                 )
+        #                 await self.client.say(embed=embed)
+        #         else:
+        #             with open(warn_path, 'r') as f:
+        #                 warns_list = json.load(f)
+        #                 current_warnings = warns_list[user.id]["Warnings"]
+        #                 current_warnings.append(reason)
+        #                 warns_list[user.id]["Warnings"] = current_warnings
+        #
+        #
+        #                 with open(warn_path, 'w') as f:
+        #                     json.dump(warns_list, f)
+        #                 embed = discord.Embed(
+        #                 title = '',
+        #                 description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
+        #                 colour = discord.Colour.green()
+        #                 )
+        #                 await self.client.say(embed=embed)
+        #                 #------------------------------------------------------------------
+        #                 punish_path = "servers/" + str(server.id) + "/warn_punishments/"
+        #                 t_path = punish_path + str(len(current_warnings)) + ".txt"
+        #                 if os.path.exists(t_path):
+        #                     with open(t_path) as fp:
+        #                        line = fp.readline()
+        #                        while line:
+        #                            check_punish = line.strip()
+        #                            line = fp.readline()
+        #                        fp.close()
+        #                        with open('srv_settings.json', 'r') as f:
+        #                            servers = json.load(f)
+        #                            warn_time = self.check_database(server, "WarnMute")
+        #                            muterole_name = servers[server.id]["Mute_Role"]
+        #                            muterole = discord.utils.get(server.roles, name=muterole_name)
+        #
+        #
+        #                        if check_punish == "Mute":
+        #                            if "m" in warn_time:
+        #                                t_time = warn_time.replace("m", "")
+        #                                time_type = "m"
+        #                                if int(t_time) == 0:
+        #                                    time = 0
+        #                                else:
+        #                                    time = int(t_time)*60
+        #                            elif "h" in warn_time:
+        #                                t_time = warn_time.replace("h", "")
+        #                                time_type = "h"
+        #                                if int(t_time) == 0:
+        #                                    time = 0
+        #                                else:
+        #                                    time = int(t_time)*3600
+        #                            user_roles = user.roles
+        #                            path = "servers/" + str(server.id) + "/muted/"
+        #                            if not os.path.exists(path):
+        #                                os.makedirs(path)
+        #                            mutepath = path + str(user.id) + ".txt"
+        #                            f = open(mutepath, "w+")
+        #                            for role in user_roles:
+        #                                if str(role) != "@everyone":
+        #                                    usrole = str(role)
+        #                                    write = usrole + "\n"
+        #                                    f.write(write)
+        #                            f.close()
+        #                            print(user)
+        #                            await self.client.replace_roles(user, muterole)
+        #                            await asyncio.sleep(time)
+        #                            path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
+        #                            with open(path) as f:
+        #                                line = fp.readline()
+        #                                roles_to_give = []
+        #                                while line:
+        #                                    role = discord.utils.get(server.roles, name=line.strip())
+        #                                    roles_to_give.append(role)
+        #                                    line = f.readline()
+        #                                f.close()
+        #                            await self.client.replace_roles(user, *roles_to_give)
+        #                            os.remove(path)
+        #
+        #                        elif check_punish == "Kick":
+        #                            await self.client.say("{} has been kicked for reaching the warning threshold.".format(user.mention))
+        #                            await self.client.kick(user)
+        #                        elif check_punish == "Ban":
+        #                            await self.client.say("{} has been banned for reaching the warning threshold.".format(user.mention))
+        #                            await self.client.ban(user)
+        # else:
+        #     embed = discord.Embed(
+        #     title = '',
+        #     description = 'You do not have permission to use this command.',
+        #     colour = discord.Colour.red()
+        #     )
+        #     await self.client.say(embed=embed)
 
 
     @commands.command(pass_context=True)
     async def warnid(self, ctx, id, *, reason = "No Reason Given"):
-        author = ctx.message.author
-        server = author.server
-        user = server.get_member(id)
-        if self.is_mod_or_perms(server, author):
-            path = "servers/" + str(server.id) + "/warnings/" + str(user.id) + "/"
-            if not os.path.exists(path):
-                os.makedirs(path)
-                warn_path = path + "warnings.json"
-                if not os.path.exists(warn_path):
-                    with open(warn_path, 'w+') as f:
-                        json_data = {}
-                        warnings = []
-                        warnings.append(reason)
-                        json_data[user.id] = {}
-                        json_data[user.id]["Warnings"] = warnings
-                        json.dump(json_data, f)
-                        embed = discord.Embed(
-                        title = '',
-                        description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
-                        colour = discord.Colour.green()
-                        )
-                        await self.client.say(embed=embed)
-
-            else:
-                warn_path = path + "warnings.json"
-                if not os.path.exists(warn_path):
-                    with open(warn_path, 'w+') as f:
-                        json_data = {}
-                        warnings = []
-                        warnings.append(reason)
-                        json_data[user.id] = {}
-                        json_data[user.id]["Warnings"] = warnings
-                        json.dump(json_data, f)
-                        embed = discord.Embed(
-                        title = '',
-                        description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
-                        colour = discord.Colour.green()
-                        )
-                        await self.client.say(embed=embed)
-                else:
-                    with open(warn_path, 'r') as f:
-                        warns_list = json.load(f)
-                        current_warnings = warns_list[user.id]["Warnings"]
-                        current_warnings.append(reason)
-                        warns_list[user.id]["Warnings"] = current_warnings
-
-
-                        with open(warn_path, 'w') as f:
-                            json.dump(warns_list, f)
-                        embed = discord.Embed(
-                        title = '',
-                        description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
-                        colour = discord.Colour.green()
-                        )
-                        await self.client.say(embed=embed)
-                        #------------------------------------------------------------------
-                        punish_path = "servers/" + str(server.id) + "/warn_punishments/"
-                        t_path = punish_path + str(len(current_warnings)) + ".txt"
-                        if os.path.exists(t_path):
-                            with open(t_path) as fp:
-                               line = fp.readline()
-                               while line:
-                                   check_punish = line.strip()
-                                   line = fp.readline()
-                               fp.close()
-                               with open('srv_settings.json', 'r') as f:
-                                   servers = json.load(f)
-                                   warn_time = servers[server.id]["WarnMute"]
-                                   muterole_name = servers[server.id]["Mute_Role"]
-                                   muterole = discord.utils.get(server.roles, name=muterole_name)
-
-
-                               if check_punish == "Mute":
-                                   if "m" in warn_time:
-                                       t_time = warn_time.replace("m", "")
-                                       time_type = "m"
-                                       if int(t_time) == 0:
-                                           time = 0
-                                       else:
-                                           time = int(t_time)*60
-                                   elif "h" in warn_time:
-                                       t_time = warn_time.replace("h", "")
-                                       time_type = "h"
-                                       if int(t_time) == 0:
-                                           time = 0
-                                       else:
-                                           time = int(t_time)*3600
-                                   user_roles = user.roles
-                                   path = "servers/" + str(server.id) + "/muted/"
-                                   if not os.path.exists(path):
-                                       os.makedirs(path)
-                                   mutepath = path + str(user.id) + ".txt"
-                                   f = open(mutepath, "w+")
-                                   for role in user_roles:
-                                       if str(role) != "@everyone":
-                                           usrole = str(role)
-                                           write = usrole + "\n"
-                                           f.write(write)
-                                   f.close()
-                                   print(user)
-                                   await self.client.replace_roles(user, muterole)
-                                   await asyncio.sleep(time)
-                                   path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
-                                   with open(path) as f:
-                                       line = fp.readline()
-                                       roles_to_give = []
-                                       while line:
-                                           role = discord.utils.get(server.roles, name=line.strip())
-                                           roles_to_give.append(role)
-                                           line = f.readline()
-                                       f.close()
-                                   await self.client.replace_roles(user, *roles_to_give)
-                                   os.remove(path)
-
-                               elif check_punish == "Kick":
-                                   await self.client.say("{} has been kicked for reaching the warning threshold.".format(user.mention))
-                                   await self.client.kick(user)
-                               elif check_punish == "Ban":
-                                   await self.client.say("{} has been banned for reaching the warning threshold.".format(user.mention))
-                                   await self.client.ban(user)
-        else:
-            embed = discord.Embed(
-            title = '',
-            description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
-            )
-            await self.client.say(embed=embed)
+        await self.client.say("Function currently down due to upgrading database system.")
+        return
+        # author = ctx.message.author
+        # server = author.server
+        # user = server.get_member(id)
+        # if self.is_mod_or_perms(server, author):
+        #     path = "servers/" + str(server.id) + "/warnings/" + str(user.id) + "/"
+        #     if not os.path.exists(path):
+        #         os.makedirs(path)
+        #         warn_path = path + "warnings.json"
+        #         if not os.path.exists(warn_path):
+        #             with open(warn_path, 'w+') as f:
+        #                 json_data = {}
+        #                 warnings = []
+        #                 warnings.append(reason)
+        #                 json_data[user.id] = {}
+        #                 json_data[user.id]["Warnings"] = warnings
+        #                 json.dump(json_data, f)
+        #                 embed = discord.Embed(
+        #                 title = '',
+        #                 description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
+        #                 colour = discord.Colour.green()
+        #                 )
+        #                 await self.client.say(embed=embed)
+        #
+        #     else:
+        #         warn_path = path + "warnings.json"
+        #         if not os.path.exists(warn_path):
+        #             with open(warn_path, 'w+') as f:
+        #                 json_data = {}
+        #                 warnings = []
+        #                 warnings.append(reason)
+        #                 json_data[user.id] = {}
+        #                 json_data[user.id]["Warnings"] = warnings
+        #                 json.dump(json_data, f)
+        #                 embed = discord.Embed(
+        #                 title = '',
+        #                 description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
+        #                 colour = discord.Colour.green()
+        #                 )
+        #                 await self.client.say(embed=embed)
+        #         else:
+        #             with open(warn_path, 'r') as f:
+        #                 warns_list = json.load(f)
+        #                 current_warnings = warns_list[user.id]["Warnings"]
+        #                 current_warnings.append(reason)
+        #                 warns_list[user.id]["Warnings"] = current_warnings
+        #
+        #
+        #                 with open(warn_path, 'w') as f:
+        #                     json.dump(warns_list, f)
+        #                 embed = discord.Embed(
+        #                 title = '',
+        #                 description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
+        #                 colour = discord.Colour.green()
+        #                 )
+        #                 await self.client.say(embed=embed)
+        #                 #------------------------------------------------------------------
+        #                 punish_path = "servers/" + str(server.id) + "/warn_punishments/"
+        #                 t_path = punish_path + str(len(current_warnings)) + ".txt"
+        #                 if os.path.exists(t_path):
+        #                     with open(t_path) as fp:
+        #                        line = fp.readline()
+        #                        while line:
+        #                            check_punish = line.strip()
+        #                            line = fp.readline()
+        #                        fp.close()
+        #                        with open('srv_settings.json', 'r') as f:
+        #                            servers = json.load(f)
+        #                            warn_time = servers[server.id]["WarnMute"]
+        #                            muterole_name = servers[server.id]["Mute_Role"]
+        #                            muterole = discord.utils.get(server.roles, name=muterole_name)
+        #
+        #
+        #                        if check_punish == "Mute":
+        #                            if "m" in warn_time:
+        #                                t_time = warn_time.replace("m", "")
+        #                                time_type = "m"
+        #                                if int(t_time) == 0:
+        #                                    time = 0
+        #                                else:
+        #                                    time = int(t_time)*60
+        #                            elif "h" in warn_time:
+        #                                t_time = warn_time.replace("h", "")
+        #                                time_type = "h"
+        #                                if int(t_time) == 0:
+        #                                    time = 0
+        #                                else:
+        #                                    time = int(t_time)*3600
+        #                            user_roles = user.roles
+        #                            path = "servers/" + str(server.id) + "/muted/"
+        #                            if not os.path.exists(path):
+        #                                os.makedirs(path)
+        #                            mutepath = path + str(user.id) + ".txt"
+        #                            f = open(mutepath, "w+")
+        #                            for role in user_roles:
+        #                                if str(role) != "@everyone":
+        #                                    usrole = str(role)
+        #                                    write = usrole + "\n"
+        #                                    f.write(write)
+        #                            f.close()
+        #                            print(user)
+        #                            await self.client.replace_roles(user, muterole)
+        #                            await asyncio.sleep(time)
+        #                            path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
+        #                            with open(path) as f:
+        #                                line = fp.readline()
+        #                                roles_to_give = []
+        #                                while line:
+        #                                    role = discord.utils.get(server.roles, name=line.strip())
+        #                                    roles_to_give.append(role)
+        #                                    line = f.readline()
+        #                                f.close()
+        #                            await self.client.replace_roles(user, *roles_to_give)
+        #                            os.remove(path)
+        #
+        #                        elif check_punish == "Kick":
+        #                            await self.client.say("{} has been kicked for reaching the warning threshold.".format(user.mention))
+        #                            await self.client.kick(user)
+        #                        elif check_punish == "Ban":
+        #                            await self.client.say("{} has been banned for reaching the warning threshold.".format(user.mention))
+        #                            await self.client.ban(user)
+        # else:
+        #     embed = discord.Embed(
+        #     title = '',
+        #     description = 'You do not have permission to use this command.',
+        #     colour = discord.Colour.red()
+        #     )
+        #     await self.client.say(embed=embed)
 
 
     @commands.command(pass_context=True)
     async def warns(self, ctx, user: discord.Member):
-        author = ctx.message.author
-        server = author.server
-        channel = ctx.message.channel
-        path = "servers/" + str(server.id) + "/warnings/" + str(user.id) + "/"
-        warnpath = path + "warnings.json"
-        if not os.path.exists(path):
-            embed = discord.Embed(
-            title = "{} Warnings".format(user),
-            description = 'This user has no warnings.',
-            colour = discord.Colour.green()
-            )
-            await self.client.say(embed=embed)
-            return
-        else:
-            if not os.path.exists(warnpath):
-                embed = discord.Embed(
-                title = "{} Warnings".format(user),
-                description = 'This user has no warnings.',
-                colour = discord.Colour.green()
-                )
-                await self.client.say(embed=embed)
-                return
-            else:
-                with open(warnpath, 'r') as f:
-                    warns_list = json.load(f)
-                    current_warnings = warns_list[user.id]["Warnings"]
-
-                cnt = 1
-                embed = discord.Embed(
-                    title = "{} Warnings".format(user),
-                    description = '',
-                    colour = discord.Colour.blue()
-                )
-                await self.client.say('Do you want the list **Inline** ? (Yes/No)')
-                user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
-                if user_response.clean_content == 'yes' or user_response.clean_content == 'Yes':
-                    inline = True
-                elif user_response.clean_content == 'no' or user_response.clean_content == 'No':
-                    inline = False
-                else:
-                    await self.client.say("Invalid.")
-                    return
-                for warn_reason in current_warnings:
-                    embed.add_field(name='Warning {}'.format(str(cnt)), value=warn_reason, inline=inline)
-                    cnt += 1
-                await self.client.say(embed=embed)
+        await self.client.say("Function currently down due to upgrading database system.")
+        return
+        # author = ctx.message.author
+        # server = author.server
+        # channel = ctx.message.channel
+        # path = "servers/" + str(server.id) + "/warnings/" + str(user.id) + "/"
+        # warnpath = path + "warnings.json"
+        # if not os.path.exists(path):
+        #     embed = discord.Embed(
+        #     title = "{} Warnings".format(user),
+        #     description = 'This user has no warnings.',
+        #     colour = discord.Colour.green()
+        #     )
+        #     await self.client.say(embed=embed)
+        #     return
+        # else:
+        #     if not os.path.exists(warnpath):
+        #         embed = discord.Embed(
+        #         title = "{} Warnings".format(user),
+        #         description = 'This user has no warnings.',
+        #         colour = discord.Colour.green()
+        #         )
+        #         await self.client.say(embed=embed)
+        #         return
+        #     else:
+        #         with open(warnpath, 'r') as f:
+        #             warns_list = json.load(f)
+        #             current_warnings = warns_list[user.id]["Warnings"]
+        #
+        #         cnt = 1
+        #         embed = discord.Embed(
+        #             title = "{} Warnings".format(user),
+        #             description = '',
+        #             colour = discord.Colour.blue()
+        #         )
+        #         await self.client.say('Do you want the list **Inline** ? (Yes/No)')
+        #         user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
+        #         if user_response.clean_content == 'yes' or user_response.clean_content == 'Yes':
+        #             inline = True
+        #         elif user_response.clean_content == 'no' or user_response.clean_content == 'No':
+        #             inline = False
+        #         else:
+        #             await self.client.say("Invalid.")
+        #             return
+        #         for warn_reason in current_warnings:
+        #             embed.add_field(name='Warning {}'.format(str(cnt)), value=warn_reason, inline=inline)
+        #             cnt += 1
+        #         await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
     async def clearwarns(self, ctx, user: discord.Member):
-        server = ctx.message.author.server
-        author = ctx.message.author
-        if self.is_admin_or_perms(server, author):
-            path = "servers/" + str(server.id) + "/warnings/" + str(user.id) + "/"
-            warnpath = path + "warnings.json"
-            os.remove(warnpath)
-            embed = discord.Embed(
-            title = '',
-            description = "{} Warnings has been removed.".format(user.mention),
-            colour = discord.Colour.green()
-            )
-            await self.client.say(embed=embed)
-        else:
-            embed = discord.Embed(
-            title = '',
-            description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
-            )
-            await self.client.say(embed=embed)
+        await self.client.say("Function currently down due to upgrading database system.")
+        return
+        # server = ctx.message.author.server
+        # author = ctx.message.author
+        # if self.is_admin_or_perms(server, author):
+        #     path = "servers/" + str(server.id) + "/warnings/" + str(user.id) + "/"
+        #     warnpath = path + "warnings.json"
+        #     os.remove(warnpath)
+        #     embed = discord.Embed(
+        #     title = '',
+        #     description = "{} Warnings has been removed.".format(user.mention),
+        #     colour = discord.Colour.green()
+        #     )
+        #     await self.client.say(embed=embed)
+        # else:
+        #     embed = discord.Embed(
+        #     title = '',
+        #     description = 'You do not have permission to use this command.',
+        #     colour = discord.Colour.red()
+        #     )
+        #     await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
     async def verify(self, ctx, user: discord.Member, *, role_name = None):
@@ -1298,3 +1298,4 @@ class Admin:
 
 def setup(client):
     client.add_cog(Admin(client))
+
