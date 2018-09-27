@@ -1,3 +1,4 @@
 discord.py
 pymysql
 youtube_dl
+requests
