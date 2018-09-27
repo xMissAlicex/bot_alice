@@ -19,7 +19,7 @@ client.remove_command('help')
 status = ['Commands: >help', 'Watching Senpai', 'Yandere Simulator']
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
-extensions = ['fun', 'admin', 'utility', 'level_system', 'nsfw']
+extensions = ['fun', 'admin', 'utility', 'level_system']
 
 
 async def change_status():
