@@ -4,10 +4,14 @@ import time
 import os
 import json
 import sys
+import requests
 import pymysql
+import random
 from discord.ext.commands import Bot
 from discord.ext import commands
 from itertools import cycle
+from random import randint
+
 
 TOKEN = os.getenv('TOKEN')
 client = commands.Bot(command_prefix = '>')
@@ -15,7 +19,7 @@ client.remove_command('help')
 status = ['Commands: >help', 'Watching Senpai', 'Yandere Simulator']
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
-extensions = ['fun', 'admin', 'utility', 'level_system']
+extensions = ['fun', 'admin', 'utility', 'level_system', 'nsfw']
 
 
 async def change_status():
@@ -175,23 +179,6 @@ async def on_message(message):
 
 
 @client.command(pass_context=True)
-async def testcommand(ctx):
-    server = ctx.message.channel.server
-    warn_number = 7
-    warn_punish = 'Mute'
-    conn = pymysql.connect(host='sql7.freesqldatabase.com', user='sql7257339', password='yakm4fsd4T', db='sql7257339')
-    c = conn.cursor()
-    sql = "INSERT INTO `Warn_Settings` VALUES ({}, %s, %s)".format(str(server.id))
-    check = (str(warn_number), warn_punish)
-    c.execute(sql, check)
-    conn.commit()
-    conn.close()
-    print("Done")
-
-
-
-
-@client.command(pass_context=True)
 async def banword(ctx, word):
     author = ctx.message.author
     server = author.server
@@ -341,8 +328,21 @@ async def botinfo():
         description = '',
         colour = discord.Colour.blue()
     )
-    embed.set_footer(text="Hey, I'm Alice.")
-    embed.set_image(url='https://orig00.deviantart.net/2629/f/2016/319/8/8/pov_by_cslucaris-daokbih.png')
+    embed.set_footer(text="Guess who?")
+    r_int = randint(1, 4)
+
+    if r_int == 1:
+        embed.set_image(url='https://i.imgur.com/rfnR6nb.jpg')
+    elif r_int == 2:
+        embed.set_image(url='https://2static.fjcdn.com/pictures/Cute_38958d_6114906.jpg')
+    elif r_int == 3:
+        embed.set_image(url='https://2static.fjcdn.com/large/pictures/9a/8e/9a8e9f_6114906.jpg')
+    else:
+        embed.set_image(url='https://johnjohns1.fjcdn.com/large/pictures/de/e0/dee0cc_6114906.jpg')
+
+
+
+
     embed.set_author(name='Information')
     embed.add_field(name='Creator', value='C0mpl3X#8366', inline=False)
     embed.add_field(name='Artist', value='CSLucaris | https://www.deviantart.com/cslucaris', inline=False)
@@ -1044,7 +1044,7 @@ async def load(ctx, extension):
             client.load_extension(extension)
             embed = discord.Embed(
             title = 'Module Loaded',
-            description = 'The module {} has been successfully loaded.'.format(extension),
+            description = 'The module **{}** has been successfully loaded.'.format(extension),
             colour = discord.Colour.green()
             )
             await client.say(embed=embed)
@@ -1064,6 +1064,30 @@ async def load(ctx, extension):
         )
         await client.say(embed=embed)
 
+# @client.command(pass_context=True)
+# async def rule34(ctx, *, tags:str):
+#         #await ctx.message.channel.trigger_typing()
+#         limit = 2
+#         header = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"}
+#         try:
+#             data = requests.get("http://rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit={}&tags={}".format(limit, tags), headers=header).json()
+#         except json.JSONDecodeError:
+#             await client.say("No results with the tags {} was found".format(tags))
+#             return
+#
+#         count = len(data)
+#         if count == 0:
+#             await client.say("No results with the tags {} was found".format(tags))
+#             return
+#         image_count = 4
+#         if count < 4:
+#             image_count = count
+#         images = []
+#         for i in range(image_count):
+#             image = data[random.randint(0, count)]
+#             images.append("http://img.rule34.xxx/images/{}/{}".format(image["directory"], image["image"]))
+#         await client.say(Language.get("nsfw.results", ctx).format(image_count, count, tags, "\n".join(images)))
+
 @client.command(pass_context=True)
 async def unload(ctx, extension):
     if ctx.message.author.id == "164068466129633280":
@@ -1072,7 +1096,7 @@ async def unload(ctx, extension):
             client.load_extension(extension)
             embed = discord.Embed(
             title = 'Module Unloaded',
-            description = 'The module {} has been successfully unloaded.'.format(extension),
+            description = 'The module **{}** has been successfully unloaded.'.format(extension),
             colour = discord.Colour.green()
             )
             await client.say(embed=embed)
@@ -1089,4 +1113,3 @@ if __name__ == '__main__':
 
     client.loop.create_task(change_status())
     client.run(TOKEN)
-
