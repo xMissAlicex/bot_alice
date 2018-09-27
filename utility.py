@@ -247,6 +247,7 @@ class Utility:
     async def clear(self, ctx, amount=100):
         channel = ctx.message.channel
         author = ctx.message.author
+        server = ctx.message.channel.server
         if self.is_mod_or_perms(server, author):
             messages = []
             try:
