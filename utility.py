@@ -10,6 +10,74 @@ class Utility:
     def __init__(self, client):
         self.client = client
 
+    def check_database(self, server, setting):
+        conn = pymysql.connect(host='sql7.freesqldatabase.com', user='sql7257339', password='yakm4fsd4T', db='sql7257339')
+        c = conn.cursor()
+        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
+        c.execute(sql)
+        conn.commit()
+        data = c.fetchone()
+        conn.close()
+        for row in data:
+            if row == 1:
+                return True
+            elif row == 0:
+                return False
+            else:
+                return row
+    def check_warn_database(self, server, warnnumber):
+        conn = pymysql.connect(host='sql7.freesqldatabase.com', user='sql7257339', password='yakm4fsd4T', db='sql7257339')
+        c = conn.cursor()
+        sql = "SELECT warn_number from `Warn_Settings` WHERE serverid = {}".format(str(server.id))
+        c.execute(sql)
+        conn.commit()
+        data = c.fetchone()
+        conn.close()
+        print(str(data))
+        for row in data:
+            if row == str(warnnumber):
+                return False
+        return True
+
+
+
+
+    def update_database(self, server, setting, value):
+            conn = pymysql.connect(host='sql7.freesqldatabase.com', user='sql7257339', password='yakm4fsd4T', db='sql7257339')
+            c = conn.cursor()
+            if setting == "Join_Role":
+                sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
+            elif setting == "DMWarn":
+                sql = "UPDATE `Server_Settings` SET DMWarn = %s where serverid = %s"
+            elif setting == "Verify_Role":
+                sql = "UPDATE `Server_Settings` SET Verify_Role = %s where serverid = %s"
+            elif setting == "Mod_Role":
+                sql = "UPDATE `Server_Settings` SET Mod_Role = %s where serverid = %s"
+            elif setting == "Admin_Role":
+                sql = "UPDATE `Server_Settings` SET Admin_Role = %s where serverid = %s"
+            elif setting == "Mute_Role":
+                sql = "UPDATE `Server_Settings` SET Mute_Role = %s where serverid = %s"
+            elif setting == "WarnMute":
+                sql = "UPDATE `Server_Settings` SET WarnMute = %s where serverid = %s"
+            elif setting == "JoinToggle":
+                sql = "UPDATE `Server_Settings` SET JoinToggle = %s where serverid = %s"
+            elif setting == "CanModAnnounce":
+                sql = "UPDATE `Server_Settings` SET CanModAnnounce = %s where serverid = %s"
+            elif setting == "Level_System":
+                sql = "UPDATE `Server_Settings` SET Level_System = %s where serverid = %s"
+            elif setting == "Chat_Filter":
+                sql = "UPDATE `Server_Settings` SET Chat_Filter = %s where serverid = %s"
+            elif setting == "Ignore_Hierarchy":
+                sql = "UPDATE `Server_Settings` SET Chat_Filter = %s where serverid = %s"
+            else:
+                print("No such setting found")
+                return
+            t = (value, str(server.id))
+            c.execute(sql, t)
+            conn.commit()
+            conn.close()
+            print("Done")
+
     def is_mod_or_perms(self, server, mod):
         t_modrole = self.check_database(server, "Mod_Role")
         t_adminrole = self.check_database(server, "Admin_Role")
@@ -360,3 +428,4 @@ class Utility:
 
 def setup(client):
     client.add_cog(Utility(client))
+
