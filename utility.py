@@ -10,6 +10,13 @@ class Utility:
     def __init__(self, client):
         self.client = client
 
+    def is_mod_or_perms(self, server, mod):
+        t_modrole = self.check_database(server, "Mod_Role")
+        t_adminrole = self.check_database(server, "Admin_Role")
+        if discord.utils.get(mod.roles, name=t_modrole) or mod.server_permissions.administrator or mod.id == '164068466129633280' or mod.id == '142002197998206976' or discord.utils.get(mod.roles, name=t_modrole):
+            return True
+        else:
+            return False
 
     @commands.command(pass_context=True)
     async def avatar(self, ctx, user: discord.Member = None):
@@ -45,7 +52,7 @@ class Utility:
             colour = discord.Colour.blue()
         )
         embed.add_field(name='Primary Modules', value='Core, Admin, Utility, Filter', inline=False)
-        embed.add_field(name='Secondary Modules', value='Fun, Music, Swarm, Level, Creator', inline=False)
+        embed.add_field(name='Secondary Modules', value='Fun, Music, Swarm, Level, Creator, NSFW', inline=False)
         await self.client.say(embed=embed)
         user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
         if user_response.clean_content == 'Core' or user_response.clean_content == 'core':
@@ -110,6 +117,17 @@ class Utility:
             embed.add_field(name='unbanword WORD', value='Unbans the word from the server', inline=False)
             embed.add_field(name='allowbypass @user', value='Allows/Disallows the user to bypass the banned words list', inline=False)
             embed.add_field(name='wordlist', value='Shows a list of the banned words', inline=False)
+            await self.client.say(embed=embed)
+
+        elif user_response.clean_content == 'nsfw' or user_response.clean_content == 'NSFW':
+            self.client.say("NSFW Module Command List")
+            embed = discord.Embed(
+                colour = discord.Colour.blue()
+            )
+            embed.set_author(name='NSFW')
+            embed.add_field(name='nsfw', value='If NSFW is enabled this command gives you the NSFW role if one is set', inline=False)
+            embed.add_field(name='nsfwrole ROLE_NAME', value='Sets the NSFW role', inline=False)
+            embed.add_field(name='nsfwsetup', value='A setup functions where you can set everything up', inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'Level' or user_response.clean_content == 'level':
@@ -228,31 +246,41 @@ class Utility:
     @commands.command(pass_context=True)
     async def clear(self, ctx, amount=100):
         channel = ctx.message.channel
-        messages = []
-        try:
-            i = int(amount)
-            print(i)
-            if amount < 2:
-                embed = discord.Embed(
-                    title = 'Clear',
-                    description = 'The amount cannot be less than 2',
-                    colour = discord.Colour.red()
-                )
-                await self.client.say(embed=embed)
-            elif amount > 100:
-                embed = discord.Embed(
-                    title = 'Clear',
-                    description = 'You cannot clear more than 100 messages.',
-                    colour = discord.Colour.red()
-                )
-                await self.client.say(embed=embed)
-            else:
+        author = ctx.message.author
+        if self.is_mod_or_perms(server, author):
+            messages = []
+            try:
+                i = int(amount)
+                print(i)
+                if amount < 2:
+                    embed = discord.Embed(
+                        title = 'Clear',
+                        description = 'The amount cannot be less than 2',
+                        colour = discord.Colour.red()
+                    )
+                    await self.client.say(embed=embed)
+                elif amount > 100:
+                    embed = discord.Embed(
+                        title = 'Clear',
+                        description = 'You cannot clear more than 100 messages.',
+                        colour = discord.Colour.red()
+                    )
+                    await self.client.say(embed=embed)
+                else:
 
-                async for message in self.client.logs_from(channel, limit=int(amount)):
-                    messages.append(message)
-                await self.client.delete_messages(messages)
-        except ValueError:
-            print("Error")
+                    async for message in self.client.logs_from(channel, limit=int(amount)):
+                        messages.append(message)
+                    await self.client.delete_messages(messages)
+            except ValueError:
+                print("Error")
+        else:
+            embed = discord.Embed(
+            title = '',
+            description = 'You do not have permission to use this command.',
+            colour = discord.Colour.red()
+            )
+            await self.client.say(embed=embed)
+
 
     @commands.command(pass_context=True)
     async def getservers(self, ctx):
@@ -331,4 +359,3 @@ class Utility:
 
 def setup(client):
     client.add_cog(Utility(client))
-
