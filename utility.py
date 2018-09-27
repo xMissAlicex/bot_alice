@@ -2,6 +2,7 @@ import discord
 import asyncio
 import time
 import json
+import pymysql
 import random
 from discord.ext.commands import Bot
 from discord.ext import commands
@@ -428,4 +429,5 @@ class Utility:
 
 def setup(client):
     client.add_cog(Utility(client))
+
 
